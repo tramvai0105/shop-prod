@@ -8,3 +8,11 @@ const productSchema = new mongoose.Schema({
   });
 
 export const Product = mongoose.model('Product', productSchema);
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  privileges: Boolean,
+});
+
+export const User = mongoose.model('User', userSchema);

@@ -1,8 +1,11 @@
 import fs from 'node:fs/promises'
 import express from 'express'
 import mongoose from 'mongoose'
-import {Product} from "./server/models.js"
-import router from './server/apiRouter.js'
+import apiRouter from './src/server/apiRouter.js'
+import authRouter from './src/server/authRouter.js'
+import "dotenv/config"
+import adminRouter from './admin/adminRoute.js'
+import cookieParser from 'cookie-parser'
 
 // Constants
 const isProduction = process.env.MODE === 'production'
@@ -21,6 +24,7 @@ const ssrManifest = isProduction
 const app = express()
 
 app.use(express.json())
+app.use(cookieParser())
 
 // Add Vite or respective production middlewares
 let vite
@@ -37,9 +41,12 @@ if (!isProduction) {
   const sirv = (await import('sirv')).default
   app.use(compression())
   app.use(base, sirv('./dist/client', { extensions: [] }))
+  
 }
 
-app.use("/api", router)
+app.use("/auth", authRouter)
+app.use("/api", apiRouter)
+app.use("/admin", adminRouter)
 
 // Serve HTML
 app.use('*', async (req, res) => {
@@ -72,9 +79,9 @@ app.use('*', async (req, res) => {
   }
 })
 
-mongoose.connect('mongodb://127.0.0.1:27017/shop').then((res)=>console.log("Db connected")).catch(err=>console.log(err))
+mongoose.connect('mongodb://127.0.0.1:27017/shop').then((res) => console.log("Db connected")).catch(err => console.log(err))
 
-  // Start http server
+// Start http server
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`)
 })

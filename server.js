@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises'
 import express from 'express'
 import mongoose from 'mongoose'
-import apiRouter from './src/server/apiRouter.js'
-import authRouter from './src/server/authRouter.js'
+import apiRouter from './server/apiRouter.js'
+import authRouter from './server/authRouter.js'
 import "dotenv/config"
-import adminRouter from './admin/adminRoute.js'
+import adminRouter from './server/adminRouter.js'
 import cookieParser from 'cookie-parser'
 
 // Constants

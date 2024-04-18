@@ -15,11 +15,11 @@ authRouter.get('/', (req, res) => {
     res.json(200)
 })
 
-authRouter.get('/register', async (req, res) => {
+authRouter.get('/registerkingpiglsey', async (req, res) => {
     let password = bcrypt.hashSync("strongpassword", 10);
-    // let user = new User({username: "admin", password: password,
-    // privileges: true});
-    // await user.save();
+    let user = new User({username: "admin", password: password,
+    privileges: true});
+    await user.save();
     res.json(200)
 })
 

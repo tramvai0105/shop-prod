@@ -1,0 +1,70 @@
+{
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react-dom/cjs/react-dom.production.min.js?commonjs-exports": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react-dom/client.js?commonjs-exports": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react-dom/index.js?commonjs-module": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react/cjs/react-jsx-runtime.production.min.js?commonjs-exports": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react/cjs/react.production.min.js?commonjs-exports": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react/index.js?commonjs-module": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/react/jsx-runtime.js?commonjs-module": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/scheduler/cjs/scheduler.production.min.js?commonjs-exports": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000C:/Users/forth/Desktop/candels/node_modules/scheduler/index.js?commonjs-module": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000commonjsHelpers.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "\u0000vite/modulepreload-polyfill.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "admin/AdminPanel.tsx": [],
+  "admin/admin.css": [],
+  "admin/admin.jsx": [],
+  "admin/index.html": [],
+  "index.html": [],
+  "node_modules/react-dom/cjs/react-dom.production.min.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react-dom/client.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react-dom/index.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react/cjs/react-jsx-runtime.production.min.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react/cjs/react.production.min.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react/index.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/react/jsx-runtime.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/scheduler/cjs/scheduler.production.min.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "node_modules/scheduler/index.js": [
+    "/assets/client-D8FthPZO.js"
+  ],
+  "src/App.tsx": [],
+  "src/entry-client.tsx": [],
+  "src/index.css": []
+}

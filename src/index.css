@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Inter-Regular';
+    src: url(../fonts/Inter-Regular.eot);
+    src: url(../fonts/Inter-Regular.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/Inter-Regular.otf) format('otf'),
+         url(../fonts/Inter-Regular.svg#Inter-Regular) format('svg'),
+         url(../fonts/Inter-Regular.ttf) format('truetype');
+  }
+  
+
+body {
+    margin: 0;
+    padding: 0;
+    display: block;
+    font-family: 'Inter-Regular';
+}

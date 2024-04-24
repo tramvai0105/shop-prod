@@ -1,14 +1,22 @@
-import styles from "./App.module.css"
-import RootPage from "./rootPage/RootPage"
-import Header from "./ui/Header"
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import routes from "./routes.tsx"
 
 function App() {
 
+  const router = (typeof window !== 'undefined')
+    ?createBrowserRouter(routes)
+    :null;
+
   return (
-    <div className="flex flex-col">
-      <Header/>
-      <RootPage/>      
-    </div>
+    <>
+      {(typeof window !== 'undefined' && router) 
+      ?<RouterProvider router={router} />
+      :<></>
+      }
+    </>
   )
 }
 

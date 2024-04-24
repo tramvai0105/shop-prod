@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "models.ts", "schema.ts"],
+  "include": ["src", "models.ts", "schema.ts", "admin"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

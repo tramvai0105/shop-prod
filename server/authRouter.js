@@ -29,7 +29,7 @@ authRouter.get('/login', async (req, res) => {
     if(!correct){
         res.status(401).send("incorrect password")
     }
-    let token = jwt.sign(user.toJSON(), process.env.SECRET, { expiresIn: 1200 });
+    let token = jwt.sign(user.toJSON(), process.env.SECRET, { expiresIn: 12000 });
     res.cookie("token", token).status(200).send("authorized")
 })
 

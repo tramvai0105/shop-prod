@@ -1,4 +1,5 @@
 import ErrorPage from "./pages/ErrorPage";
+import LoginPage from "./pages/LoginPage";
 import MainPage, { ProductInterface } from "./pages/MainPage";
 import ProductPage from "./pages/ProductPage";
 import Layout from "./ui/Layout"
@@ -19,6 +20,10 @@ const  routes = [
           element: <ProductPage/>,
         },
       ]
+    },
+    {
+      path: "/login",
+      element: <LoginPage/>,
     },
   ]
 

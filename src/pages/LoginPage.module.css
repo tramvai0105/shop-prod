@@ -1,0 +1,5 @@
+.login_bg {
+    background-image: radial-gradient(#212121 10%, gray 20%);
+    background-position: 0 0;
+    background-size: 20px 20px;
+}

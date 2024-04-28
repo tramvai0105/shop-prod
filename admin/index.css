@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Inter-Regular";
+    src: url(../fonts/Inter-Regular.eot);
+    src:
+        url(../fonts/Inter-Regular.eot?#iefix) format("embedded-opentype"),
+        url(../fonts/Inter-Regular.otf) format("otf"),
+        url(../fonts/Inter-Regular.svg#Inter-Regular) format("svg"),
+        url(../fonts/Inter-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Inter-Medium";
+    src: url(./Inter-Medium.eot);
+    src:
+        url(../fonts/Inter-Medium.eot?#iefix) format("embedded-opentype"),
+        url(../fonts/Inter-Medium.otf) format("otf"),
+        url(../fonts/Inter-Medium.ttf) format("truetype"),
+        url(../fonts/Inter-Medium.svg#Inter-Medium) format("svg");
+}
+
+@font-face {
+    font-family: 'Inter-Light';
+    src: url(../fonts/Inter-Light.eot);
+    src: url(../fonts/Inter-Light.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/Inter-Light.ttf) format('truetype'),
+         url(../fonts/Inter-Light.svg#Inter-Light) format('svg'),
+         url(../fonts/Inter-Light.otf) format('otf');
+  }  
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: block;
+    font-family: "Inter-Light";
+}
+
+#root{
+    height: 100%;
+    width: 100%;
+}

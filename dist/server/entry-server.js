@@ -6,7 +6,7 @@ import { useLoaderData, Outlet } from "react-router-dom";
 function ErrorPage() {
   return /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center text-6xl", children: "Not Found 404" });
 }
-const login_bg = "_login_bg_598e2_1";
+const login_bg = "_login_bg_1ohmd_1";
 const styles = {
   login_bg
 };
@@ -63,10 +63,10 @@ function LoginPage() {
     ] })
   ] }) });
 }
-function Product({ name, description, price }) {
+function Product({ name, image, description, price }) {
   var _a;
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-2 leading-5", children: [
-    /* @__PURE__ */ jsx("img", { src: "/32093976.jpg", className: "w-[242px]", alt: "" }),
+    /* @__PURE__ */ jsx("div", { style: { height: "242px" }, className: "w-fit flex items-center overflow-hidden", children: /* @__PURE__ */ jsx("img", { src: image, style: { width: "180px" }, className: "", alt: "" }) }),
     /* @__PURE__ */ jsx("span", { className: "font-bold text-[16px]", children: name }),
     /* @__PURE__ */ jsx("span", { className: "text-[14px]", children: description }),
     /* @__PURE__ */ jsx("span", { className: "text-[14px] font-bold", children: ((_a = price.toString().match(/\d{1,3}(?=(\d{3})*$)/g)) == null ? void 0 : _a.join(" ")) + " р." })
@@ -83,7 +83,7 @@ function MainPage() {
     let products2 = await data2.json();
     setProducts(products2);
   }
-  return /* @__PURE__ */ jsx("div", { className: "flex justify-center w-full", children: /* @__PURE__ */ jsx("div", { className: "flex flex-row gap-14", children: products.map((prod, i) => /* @__PURE__ */ jsx(Product, { name: prod.name, price: prod.price, description: prod.description }, i)) }) });
+  return /* @__PURE__ */ jsx("div", { className: "flex justify-center w-full", children: /* @__PURE__ */ jsx("div", { className: "flex flex-row gap-14", children: products.map((prod, i) => /* @__PURE__ */ jsx(Product, { image: prod.image, name: prod.name, price: prod.price, description: prod.description }, i)) }) });
 }
 function ProductPage() {
   return /* @__PURE__ */ jsx("div", { children: "Products" });

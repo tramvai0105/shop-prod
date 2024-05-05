@@ -1,24 +1,38 @@
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import styles from "./Catalogue.module.css"
-import { json } from "stream/consumers";
+import { key } from "localforage";
 
 interface ProductInterface {
     name: string,
     category: string,
     price: number,
     description: string,
+    image: string,
     _id: string,
+}
+
+interface FilterInterface {
+    name: string,
+    price: string,
+    priceGT: boolean,
 }
 
 export default function Catalogue() {
 
     const [products, setProducts] = useState<ProductInterface[]>([])
+    const [fProducts, setFProducts] = useState<ProductInterface[] | null>(null)
+    const [filter, setFilter] = useState<FilterInterface>({name : "", price: "", priceGT: false});
     const [editProduct, setEditProduct] = useState<ProductInterface | null>(null)
+    const [creater, setCreater] = useState(false);
 
     useEffect(() => {
         getProducts();
     }, [])
+
+    useEffect(()=>{
+        filterProducts(filter);
+    }, [filter])
 
     async function getProducts() {
         let data = await fetch("http://localhost:5173/api/products");
@@ -26,8 +40,44 @@ export default function Catalogue() {
         setProducts(products)
     }
 
+    function filterSetter(filter: FilterInterface){
+        setFilter(filter)
+    }
+
+    function filterProducts(filter: FilterInterface){
+        // let values = Object.values(filter);
+        // let noFilter = true;
+        // for(let i = 0; i < values.length; i++){
+        //     let v = values[i]
+        //     if(typeof v == "string" && v != ""){
+        //         noFilter = false;
+        //         break
+        //     }
+        // }
+        // if(noFilter){
+        //     setFProducts(null);
+        //     return;
+        // }
+        let filtered = 
+        products.filter(prod=>filter.name == "" || prod.name.includes(filter.name))
+            .filter(prod=>filter.price == "" || isNaN(Number(filter.price)) 
+            || (filter.priceGT && prod.price >= Number(filter.price))
+            || (!filter.priceGT && prod.price <= Number(filter.price)))
+        if(products.length == filtered.length){
+            setFProducts(null);
+            return
+        }
+        setFProducts(filtered)
+    }
+
     function openEditor(id: string | null) {
+        if(id === ""){
+            setCreater(true);
+            setEditProduct(null);
+            return;
+        }
         if (id == null) {
+            setCreater(false);
             setEditProduct(null)
             getProducts();
         }
@@ -38,14 +88,18 @@ export default function Catalogue() {
     }
 
     return (
-        <div className="flex h-full relative pl-10 gap-10 w-full">
-            <Editor product={editProduct} close={openEditor} />
-            <div className="flex pt-4 flex-row gap-14">
-                {products.map((prod, i) =>
+        <div className="flex h-full relative pl-10 w-full">
+            <Editor create={creater} product={editProduct} close={openEditor} />
+            <div className="grid grid-cols-4 py-6 overflow-y-auto gap-14">
+                {!fProducts && products.map((prod, i) =>
+                    <Product key={i} data={prod} change={openEditor} />)}
+                {fProducts && fProducts.map((prod, i) =>
                     <Product key={i} data={prod} change={openEditor} />)}
             </div>
-            <div className="border-l-[1px] p-4 pt-8 text-lg border-gray-100">
+            <div className="border-l-[1px] ml-auto gap-8 flex w-[30%] flex-col p-4 pt-8 text-lg border-gray-100">
                 Изменить или добавить продукт.
+                <button onClick={()=>openEditor("")} className="rounded-md px-4 shadow-sm hover:shadow-md hover:bg-gray-50 bg-white py-2 border border-black">Добавить</button>
+                <Filter count={fProducts?.length} setter={filterSetter}/>
             </div>
         </div>
     )
@@ -60,7 +114,9 @@ function Product({ data, change, edit = false }: { data: ProductInterface, chang
     },[data])
 
     return (<div className="flex flex-col items-center gap-2 leading-4">
-        <img src="/32093976.jpg" style={{ width: (edit) ? "242px" : "180px" }} className="" alt="" />
+        <div style={{ height: (edit) ? "305px" : "230px" }} className="w-fit flex items-center overflow-hidden">
+            <img src={data.image} style={{ width: (edit) ? "242px" : "180px" }} className="" alt="" />
+        </div>
         <span className="font-bold text-[16px]">{prod.name}</span>
         <span className="text-[14px] whitespace-pre text-center">{prod.description.split("").reduce((acc, value, i)=>{
             if(i > 0 && i % 37 == 0){
@@ -73,13 +129,14 @@ function Product({ data, change, edit = false }: { data: ProductInterface, chang
     </div>)
 }
 
-function Editor({ product, close }: { product: ProductInterface | null, close: (id: string | null) => void }) {
+function Editor({ product, close, create }: { product: ProductInterface | null, close: (id: string | null) => void, create: boolean }) {
 
     let blankProd: ProductInterface = {
         name: "",
         category: "",
         price: 0,
         description: "",
+        image: "",
         _id: "",
     }
     const [formData, setFormData] = useState<ProductInterface>((product) ? product : blankProd);
@@ -88,12 +145,15 @@ function Editor({ product, close }: { product: ProductInterface | null, close: (
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        if (product) {
+        if(create){
+            setFormData(blankProd)
+        }
+        if(!create && product) {
             setFormData(product)
         }
     }, [product])
 
-    if (product == null) {
+    if (product == null && !create) {
         return (
             <></>
         )
@@ -112,10 +172,35 @@ function Editor({ product, close }: { product: ProductInterface | null, close: (
 
     async function editorFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        if(create){
+            postProduct();
+        }else{
+            putProduct();
+        }
+    }
+
+    async function putProduct() {
         let body = new FormData();
         Object.keys(formData).forEach((key) => body.append(key, String(formData[key as keyof ProductInterface])))
         body.append("files", file as Blob)
         let res = await fetch("/api/putProduct",
+            {
+                method: "POST",
+                body: body,
+            })
+        let resBody : {message: string} = await res.json();
+        if (res.status !== 200) {
+            setMessage(JSON.stringify(resBody.message))
+            return
+        }
+        setMessage(resBody.message)
+    }
+
+    async function postProduct() {
+        let body = new FormData();
+        Object.keys(formData).forEach((key) => body.append(key, String(formData[key as keyof ProductInterface])))
+        body.append("files", file as Blob)
+        let res = await fetch("/api/postProduct",
             {
                 method: "POST",
                 body: body,
@@ -150,6 +235,34 @@ function Editor({ product, close }: { product: ProductInterface | null, close: (
                 </form>
             </div>
         </div>
+    )
+}
+
+function Filter({setter, count}:{setter: (filter: FilterInterface)=> void, count: number | undefined}){
+
+    let _initFilter = {name : "", price: "", priceGT: false}
+
+    const [filter, setFilter] = useState<FilterInterface>(_initFilter);
+
+    useEffect(()=>{
+        setter(filter);
+    }, [filter])
+
+    return(
+        <div className="flex flex-col gap-2 border-t-[1px] border-gray-200 pt-4">
+            <span>Фильтр по названию</span>
+            <input value={filter.name} onChange={(e)=>setFilter((f)=>{return {...f, name: e.target.value}})} className="border-[1px] pl-2 border-black" type="text"/>
+            <div className="flex flex-row justify-between">
+                <span>Фильтр по цене</span>
+                <select value={Number(filter.priceGT)} onChange={(e)=>setFilter((f)=>{return {...f, priceGT: Boolean(Number(e.target.value))}})}>
+                    <option value={0}>Меньше</option>
+                    <option value={1}>Больше</option>
+                </select>
+            </div>
+            <input value={filter.price} onChange={(e)=>setFilter((f)=>{return {...f, price: e.target.value}})} className="border-[1px] pl-2 border-black" type="number"/>
+            {count ? <span>Найдено по фильтру: {count}</span> : <></>}
+            <button className="rounded-md px-6 mt-4 w-fit mx-auto shadow-sm hover:shadow-md hover:bg-gray-50 bg-white py-1 border border-black" onClick={()=>setFilter(_initFilter)}>Сброс фильтра</button>
+       </div>
     )
 }
 

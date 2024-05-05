@@ -3,7 +3,15 @@ import { Product } from './models.js'
 import inspector from "schema-inspector";
 const apiRouter = express.Router();
 import multer from "multer";
-const upload = multer({ dest: "uploads/" });
+import fs from "fs"
+import { resolve } from 'path';
+const storage = multer.diskStorage({
+  destination: "public/",
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + ".png");
+}
+});
+const upload = multer({storage: storage})
 
 // middleware that is specific to this router
 const middleware = (req, res, next) => {
@@ -22,7 +30,7 @@ apiRouter.get('/products', async (req, res) => {
   res.send(JSON.stringify(products))
 })
 
-apiRouter.post('/putProduct', upload.array("files"), async (req, res) => {
+apiRouter.post('/putProduct', upload.single("files"), async (req, res) => {
   let validation = {
     type: 'object',
     properties: {
@@ -31,16 +39,22 @@ apiRouter.post('/putProduct', upload.array("files"), async (req, res) => {
       category: { type: 'string', minLength: 5 },
       price: { type: 'number', minLength: 1 },
       description: { type: 'string', minLength: 5 },
+      image: {type: 'string', minLength: 5},
     },
   };
   let validated = inspector.validate(validation, req.body)
   if(!validated.valid){
     return res.status(501).json({message: "Неверные данные"});
   }
-  if(req.files && req.files[0] 
-    && (req.files[0].mimetype != "image/png"
-      || req.files[0].mimetype != "image/jpg")){
+  if(req.file
+    && !(req.file.mimetype == "image/png"
+      || req.file.mimetype == "image/jpg"
+      || req.file.mimetype == "image/jpeg")){
+    fs.unlink(resolve(resolve(), "public", req.file.filename), (err) => err && console.error(err));
     return res.status(501).json({message: "Неверный тип файла"});
+  }
+  if(req.file){
+    req.body.image = req.file.filename;
   }
   try{
     await Product.findOneAndUpdate({_id: req.body._id}, req.body)
@@ -50,27 +64,42 @@ apiRouter.post('/putProduct', upload.array("files"), async (req, res) => {
   }
 })
 
-apiRouter.post('/postProduct', upload.array("files"), async (req, res) => {
+apiRouter.post('/postProduct', upload.single("files"), async (req, res) => {
+  delete req.body._id
   let validation = {
     type: 'object',
     properties: {
-      name: { type: 'string', minLength: 1 },
-      category: { type: 'string', minLength: 1 },
+      name: { type: 'string', minLength: 5 },
+      // category: { type: 'string', minLength: 5 },
       price: { type: 'number', minLength: 1 },
-      description: { type: 'string', minLength: 1 },
+      description: { type: 'string', minLength: 5 },
     },
   };
   let validated = inspector.validate(validation, req.body)
+  console.log(req.body)
   if(!validated.valid){
-    res.json({message: "Not valid data"})
+    return res.status(501).json({message: "Неверные данные"});
   }
-  let prod = new Product(req.body);
+  if(!req.file){
+    return res.status(501).json({message: "Изображение не найдено"})
+  }
+  if(req.file
+    && !(req.file.mimetype == "image/png"
+      || req.file.mimetype == "image/jpg"
+      || req.file.mimetype == "image/jpeg")){
+    fs.unlink(resolve(resolve(), "public", req.file.filename), (err) => err && console.error(err));
+    return res.status(501).json({message: "Неверный тип файла"});
+  }
+  if(req.file){
+    req.body.image = req.file.filename;
+  }
+  console.log(req.body)
   try{
-    await prod.save();
+    await (new Product(req.body)).save()
+    return res.status(200).json({message: "Данные добавлены"});
   }catch(error){
-    res.json({message: error});
+    return res.status(501).json({message: error});
   }
-  res.json(200)
 })
 
 export default apiRouter

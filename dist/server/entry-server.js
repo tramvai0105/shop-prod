@@ -100,6 +100,7 @@ function Header() {
 function HeaderLink({ children }) {
   return /* @__PURE__ */ jsx("a", { className: "text-[16px]", href: "/products", children: children.toUpperCase() });
 }
+const url = "http://localhost:5173";
 const routes = [
   {
     path: "/",
@@ -123,15 +124,16 @@ const routes = [
   }
 ];
 async function mainPageLoader() {
-  let data = await fetch("/api/products");
+  console.log(url);
+  let data = await fetch(`${url}/api/products`);
   let products = await data.json();
   return products;
 }
 async function render(req) {
   let origin = `${req.protocol}://${req.get("host")}`;
-  let url = new URL(req.originalUrl || req.url, origin);
+  let url2 = new URL(req.originalUrl || req.url, origin);
   let handler = createStaticHandler(routes);
-  req = new Request(url);
+  req = new Request(url2);
   let context = await handler.query(req);
   let router = createStaticRouter(
     handler.dataRoutes,

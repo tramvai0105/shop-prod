@@ -79,7 +79,7 @@ function MainPage() {
     getProducts();
   }, []);
   async function getProducts() {
-    let data2 = await fetch("http://localhost:5173/api/products");
+    let data2 = await fetch("/api/products");
     let products2 = await data2.json();
     setProducts(products2);
   }
@@ -123,7 +123,7 @@ const routes = [
   }
 ];
 async function mainPageLoader() {
-  let data = await fetch("http://localhost:5173/api/products");
+  let data = await fetch("/api/products");
   let products = await data.json();
   return products;
 }
